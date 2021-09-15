@@ -10,4 +10,5 @@ Something like
 
       gbtgridder/src/gbtgridder --clobber Skynet_59471_messier_31_62079_10919.cyb.fits
 	  
-should do the job.  Not tested yet!
+should do the job.  Not tested yet!  This should be version 0.6 or later, and make sure you see 
+the new --dish option!
