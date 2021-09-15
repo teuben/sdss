@@ -16,7 +16,7 @@
 #
 #   Some archival M31 data with better noise:
 #
-#   ./plotsp1.py Skynet_58945_M31_10kpc_radius_44912_54515.A.onoff.cal.txt 8 -2100 -800 100 1000
+#   ./plotsp1.py archive/Skynet_58945_M31_10kpc_radius_44912_54515.A.onoff.cal.txt 8 -2100 -800 100 1000
 #
 
 import sys
