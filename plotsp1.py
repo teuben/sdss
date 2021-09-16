@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 #
 #   GBO 20m spectra plotting - September 2021 during Single Dish Workshop
+#   Only useful for HIRES OnOff data
 #
 #   Command line options (hardcoded)
 #          plotsp1.py spectrum_file [smooth] [order] [baseline_section(s)]
