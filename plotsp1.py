@@ -3,21 +3,23 @@
 #   GBO 20m spectra plotting - September 2021 during Single Dish Workshop
 #
 #   Command line options (hardcoded)
-#   plotsp1.py spectrum_file [order] [baseline_section(s)]
+#          plotsp1.py spectrum_file [order] [baseline_section(s)]
 #
 #   Plotting only the XX, since the YY has calibration issues due to a bad channel
 #   This scripts assume OH in the first band, and HI in the 2nd
+#   There are some horrific options in the script to flip things around
 #
 #   Examples of use:
 #
 #   ./plotsp1.py group2/Skynet_59471_M31_group2_62068_10914.A.onoff.cal.txt 4 -770 -600 50 2200
 #   ./plotsp1.py group2/Skynet_59472_ngc628_group2_62098_10938.A.onoff.cal.txt  8 1600 3000  100 500 800 1500
 #   ./plotsp1.py group2/Skynet_59472_ngc1530_group2_62102_10937.A.onoff.cal.txt 8 2000 2250 2650 3400 3600 5000
+#   ./plotsp1.py group2/Skynet_59472_ngc3976_group2_62119_10949.A.onoff.cal.txt 8
 #
 #   Some archival M31 data with better noise:
 #
 #   ./plotsp1.py archive/Skynet_58945_M31_10kpc_radius_44912_54515.A.onoff.cal.txt 8 -2100 -800 100 1000
-#
+#   ./plotsp1.py archive/Skynet_58945_M31_center_44909_54513.A.onoff.cal.txt 8 -2100 -600 100 1000
 
 import sys
 import numpy as np
@@ -99,6 +101,16 @@ def fit_poly(x, y, p_order=1, bl = []):
         r = y[m] - p(x[m])
     return (p,t,r)
 
+def diff_rms(y):
+    """ take the differences between neighboring signals
+    and compute their rms. this should be sqrt(2)*sigma
+    if there is no  trend in the input signal, and if
+    the input signal is not correlated (e.g. hanning)
+    """
+    #y1 = y[1:]
+    #y2 = y[:-1]
+    return (y[1:]-y[:-1]).std() / 1.414
+
 def my_smooth(y, box_pts):
     box = np.ones(box_pts)/box_pts
     y_smooth = np.convolve(y, box, mode='same')
@@ -113,7 +125,8 @@ normalize = False
 band_1 = False
 band_2 = True
 do_yy = False
-do_smooth = False
+do_smooth = 0
+# do_smooth = 5
 
 (f1,xx1,yy1,f2,xx2,yy2) = np.loadtxt(tab).T
 get_key("FILENAME",tab)
@@ -129,9 +142,9 @@ if do_yy:
     xx1 = yy1
     xx2 = yy2
 
-if do_smooth:
-    xx1 = my_smooth(xx1,3)
-    xx2 = my_smooth(xx2,3)
+if do_smooth > 0:
+    xx1 = my_smooth(xx1,do_smooth)
+    xx2 = my_smooth(xx2,do_smooth)
 
 if p_order != None:
     if band_1:
@@ -160,9 +173,10 @@ else:
         plt.plot(v2,xx2, label='%g  %ss' % (f2ref, get_key("EXPOSURE")))
         if p_order != None:
             rms2 = r2.std()
+            rms3 = diff_rms(r2)
             #plt.plot(t2, p2(t2), '-', label='POLY %d' % p_order)
-            plt.plot(v2, p2(v2), '-', label='POLY %d' % p_order)
-            plt.plot(t2, r2, '-', label='RMS %g' % rms2)
+            plt.plot(v2, p2(v2), '-', label='POLY %d SMTH %d' % (p_order,do_smooth))
+            plt.plot(t2, r2, '-', label='RMS %.3g %.3g' % (rms2, rms3))
             plt.plot([v2[0],v2[-1]], [0.0, 0.0], c='black', linewidth=2, label='baseline')
     plt.ylabel('Power [Kelvin]')
 plt.xlabel('Doppler Velocity [km/s]')
