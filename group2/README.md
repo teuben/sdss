@@ -11,6 +11,7 @@
 * 62119: https://www.gb.nrao.edu/20m/peak/NGC3976_GROUP2/Skynet_59472_ngc3976_group2_62119_10949.htm
 * 62127: https://www.gb.nrao.edu/20m/peak/NGC4565_GROUP2_2/Skynet_59472_ngc4565_group2_2_62127_10953.htm
 * 62130: https://www.gb.nrao.edu/20m/peak/MESSIER_31/Skynet_59472_messier_31_62130_10961.htm
+* https://www.gb.nrao.edu/20m/peak/NGC4559_GROUP2/Skynet_59473_ngc4559_group2_62147_10970.htm
 
 ## sdss3 (rogue):
 
