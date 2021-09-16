@@ -29,6 +29,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 
+# --- ugly command line parsing ---------------------------------------------------------------------------
+
 if len(sys.argv) == 1:
     print("Usage:  %s [smooth] [polynomial_order] [baseline_section(s) in km/s]"  % sys.argv[0])
     print("e.g.    %s 0 3 100 1000   1300  2000" % sys.argv[0])
@@ -66,6 +68,8 @@ else:
     bl = []
     nbl = 0
 
+
+# --- a few useful helper functions ---------------------------------------------------------------------------
 
 keywords = {}    
 
@@ -127,6 +131,9 @@ def my_smooth(y, box_pts):
     y_smooth = np.convolve(y, box, mode='same')
     return y_smooth
 
+
+# --- useful constants --------------------------------------------------------------------
+
 f1ref = 1665.4018        # OH line
 f1ref = 1667.3590        # OH line
 f2ref = 1420.405751786   # HI line
@@ -137,9 +144,11 @@ band_1 = False
 band_2 = True
 do_yy = False
 
-(f1,xx1,yy1,f2,xx2,yy2) = np.loadtxt(tab).T
-get_key("FILENAME",tab)
+# --- start of code --------------------------------------------------------------------
 
+(f1,xx1,yy1,f2,xx2,yy2) = np.loadtxt(tab).T
+
+get_key("FILENAME",tab)
 print("DATE_OBS:  ",get_key("DATE_OBS"))
 print("OBSERVER:  ",get_key("OBSERVER"))
 
