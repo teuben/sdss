@@ -10,7 +10,7 @@
 * https://www.gb.nrao.edu/20m/peak/NGC4565_GROUP2/Skynet_59472_ngc4565_group2_62118_10948.htm
 * https://www.gb.nrao.edu/20m/peak/NGC3976_GROUP2/Skynet_59472_ngc3976_group2_62119_10949.htm
 * https://www.gb.nrao.edu/20m/peak/NGC4565_GROUP2_2/Skynet_59472_ngc4565_group2_2_62127_10953.htm
-
+* https://www.gb.nrao.edu/20m/peak/NGC_1530/Skynet_59473_ngc_1530_62134_10963.htm
 
 ## sdss3:
 
