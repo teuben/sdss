@@ -3,7 +3,7 @@
 #   GBO 20m spectra plotting - September 2021 during Single Dish Workshop
 #
 #   Command line options (hardcoded)
-#          plotsp1.py spectrum_file [order] [baseline_section(s)]
+#          plotsp1.py spectrum_file [smooth] [order] [baseline_section(s)]
 #
 #   Plotting only the XX, since the YY has calibration issues due to a bad channel
 #   This scripts assume OH in the first band, and HI in the 2nd
@@ -11,15 +11,17 @@
 #
 #   Examples of use:
 #
-#   ./plotsp1.py group2/Skynet_59471_M31_group2_62068_10914.A.onoff.cal.txt 4 -770 -600 50 2200
-#   ./plotsp1.py group2/Skynet_59472_ngc628_group2_62098_10938.A.onoff.cal.txt  8 1600 3000  100 500 800 1500
-#   ./plotsp1.py group2/Skynet_59472_ngc1530_group2_62102_10937.A.onoff.cal.txt 8 2000 2250 2650 3400 3600 5000
-#   ./plotsp1.py group2/Skynet_59472_ngc3976_group2_62119_10949.A.onoff.cal.txt 8
-#
+#   ./plotsp1.py group2/Skynet_59471_M31_group2_62068_10914.A.onoff.cal.txt     0 4 -770 -600 50 2200
+#   ./plotsp1.py group2/Skynet_59472_ngc628_group2_62098_10938.A.onoff.cal.txt  0 8 1600 3000  100 500 800 1500
+#   ./plotsp1.py group2/Skynet_59472_ngc1530_group2_62102_10937.A.onoff.cal.txt 0 8 2000 2250 2650 3400 3600 5000
+#   ./plotsp1.py group2/Skynet_59472_ngc3976_group2_62119_10949.A.onoff.cal.txt 0 8
+#   ./plotsp1.py group2/Skynet_59472_ngc4565_group2_62118_10948.A.onoff.cal.txt 0 8
+#   
+
 #   Some archival M31 data with better noise:
 #
-#   ./plotsp1.py archive/Skynet_58945_M31_10kpc_radius_44912_54515.A.onoff.cal.txt 8 -2100 -800 100 1000
-#   ./plotsp1.py archive/Skynet_58945_M31_center_44909_54513.A.onoff.cal.txt 8 -2100 -600 100 1000
+#   ./plotsp1.py archive/Skynet_58945_M31_10kpc_radius_44912_54515.A.onoff.cal.txt 0 8 -2100 -800 100 1000
+#   ./plotsp1.py archive/Skynet_58945_M31_center_44909_54513.A.onoff.cal.txt       0 8 -2100 -600 100 1000
 
 import sys
 import numpy as np
@@ -27,19 +29,27 @@ import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 
 if len(sys.argv) == 1:
-    print("Usage:  %s [polynomial_order] [baseline_section(s) in km/s]"  % sys.argv[0])
-    print("e.g.    %s 3 100 1000   1300  2000" % sys.argv[0])
+    print("Usage:  %s [smooth] [polynomial_order] [baseline_section(s) in km/s]"  % sys.argv[0])
+    print("e.g.    %s 0 3 100 1000   1300  2000" % sys.argv[0])
     sys.exit(0)
 
 tab = sys.argv[1]
 
 if len(sys.argv) > 2:
-    p_order = int(sys.argv[2])
+    do_smooth = int(sys.argv[2])
 else:
-    p_order = None
+    do_smooth = 0
+print("SMOOTH: ",do_smooth)    
+
 
 if len(sys.argv) > 3:
-    baselines = sys.argv[3:]
+    p_order = int(sys.argv[3])
+else:
+    p_order = -1
+print("POLY: ",p_order)    
+
+if len(sys.argv) > 4:
+    baselines = sys.argv[4:]
     nbl = len(baselines)
     if nbl%2 != 0:
         print("Need even number of baseline sections")
@@ -89,7 +99,7 @@ def fit_poly(x, y, p_order=1, bl = []):
     else:
         first = True
         for b in bl:
-            print('B',b)
+            # print('B',b)
             if first:
                 m = ((x>b[0]) & (x<b[1]))
                 first = False
@@ -125,8 +135,6 @@ normalize = False
 band_1 = False
 band_2 = True
 do_yy = False
-do_smooth = 0
-# do_smooth = 5
 
 (f1,xx1,yy1,f2,xx2,yy2) = np.loadtxt(tab).T
 get_key("FILENAME",tab)
@@ -146,7 +154,7 @@ if do_smooth > 0:
     xx1 = my_smooth(xx1,do_smooth)
     xx2 = my_smooth(xx2,do_smooth)
 
-if p_order != None:
+if p_order >= 0:
     if band_1:
         (p1,t1,r1) = fit_poly(v1,xx1,p_order,bl)
     if band_2:
@@ -171,7 +179,7 @@ else:
         plt.plot(v1,xx1, label='%g ?' % f1ref)
     if band_2:
         plt.plot(v2,xx2, label='%g  %ss' % (f2ref, get_key("EXPOSURE")))
-        if p_order != None:
+        if p_order >= 0:
             rms2 = r2.std()
             rms3 = diff_rms(r2)
             #plt.plot(t2, p2(t2), '-', label='POLY %d' % p_order)
