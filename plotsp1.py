@@ -93,7 +93,12 @@ def get_key(key, tab=None, verbose=False):
             if line[0] == '#':
                 words = line[1:].split('=')
                 if len(words)>1:
-                    keywords[words[0].strip()] = words[1].strip()
+                    key = words[0].strip()
+                    val = words[1].strip()
+                    if key in keywords:
+                        keywords[key].append(val)
+                    else:
+                        keywords[key] = [val]
         if verbose:
             print(keywords)
     if key in keywords:
@@ -187,7 +192,7 @@ if p_order >= 0:
 
 plt.figure()
 
-plt.plot(v2,zz, label='%g  %ss' % (f2ref, get_key("EXPOSURE")))
+plt.plot(v2,zz, label='%g  %ss' % (f2ref, get_key("EXPOSURE")[0]))
 if p_order >= 0:
     rms2 = r2.std()
     rms3 = diff_rms(r2)
