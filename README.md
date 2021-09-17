@@ -55,6 +55,7 @@ but most people would not want to this broad and high order. Surprisingly the
 repored noises with and without trend is very close (0.106 and 0.101K), suggesting
 not many systematic effects are left.
 
+
 A more reasonable approach would be
 
     ./plotsp1.py group2/Skynet_59472_ngc628_group2_62098_10938.A.onoff.cal.txt 3 0 2 160 570 720 1150
@@ -62,3 +63,6 @@ A more reasonable approach would be
 which is probably how most people would want to fit a baseline.  The reported internal noise is now 0.0984 K
 Given the crazy polynomial outside the baseline segments, you will need to zoom in via matplotlib and 
 convince yourself this is a pretty good detection.
+
+![n628 20m spectrum](n628-20m.png)
+
