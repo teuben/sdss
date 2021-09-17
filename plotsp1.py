@@ -4,7 +4,7 @@
 #   Only useful for HIRES OnOff data
 #
 #   Command line options (hardcoded)
-#          plotsp1.py spectrum_file [smooth] [order] [baseline_section(s)]
+#          plotsp1.py spectrum_file [band] [smooth] [order] [baseline_section(s)]
 #
 #   Plotting only the XX, since the YY has calibration issues due to a bad channel
 #   This scripts assume OH in the first band, and HI in the 2nd
@@ -32,27 +32,34 @@ from scipy.optimize import curve_fit
 # --- ugly command line parsing ---------------------------------------------------------------------------
 
 if len(sys.argv) == 1:
-    print("Usage:  %s [smooth] [polynomial_order] [baseline_section(s) in km/s]"  % sys.argv[0])
-    print("e.g.    %s 0 3 100 1000   1300  2000" % sys.argv[0])
+    print("Usage:  %s [band] [smooth] [polynomial_order] [baseline_section(s) in km/s]"  % sys.argv[0])
+    print("e.g.    %s 3 0 3 100 1000   1300  2000" % sys.argv[0])
     sys.exit(0)
 
 tab = sys.argv[1]
 
 if len(sys.argv) > 2:
-    do_smooth = int(sys.argv[2])
+    do_band = int(sys.argv[2])
+else:
+    do_band = 3
+print("BAND: ",do_band)    
+
+
+if len(sys.argv) > 3:
+    do_smooth = int(sys.argv[3])
 else:
     do_smooth = 0
 print("SMOOTH: ",do_smooth)    
 
 
-if len(sys.argv) > 3:
-    p_order = int(sys.argv[3])
+if len(sys.argv) > 4:
+    p_order = int(sys.argv[4])
 else:
     p_order = -1
 print("POLY: ",p_order)    
 
-if len(sys.argv) > 4:
-    baselines = sys.argv[4:]
+if len(sys.argv) > 5:
+    baselines = sys.argv[5:]
     nbl = len(baselines)
     if nbl%2 != 0:
         print("Need even number of baseline sections")
@@ -134,15 +141,11 @@ def my_smooth(y, box_pts):
 
 # --- useful constants --------------------------------------------------------------------
 
-f1ref = 1665.4018        # OH line
-f1ref = 1667.3590        # OH line
-f2ref = 1420.405751786   # HI line
-c = 299792.458
+f2ref = 1420.405751786   # MHz  - HI line 
+c     = 299792.458       # km/s - speed of light
 
-normalize = False
-band_1 = False
-band_2 = True
-do_yy = False
+normalize = False        # deprecated
+
 
 # --- start of code --------------------------------------------------------------------
 
@@ -151,52 +154,44 @@ do_yy = False
 get_key("FILENAME",tab)
 print("DATE_OBS:  ",get_key("DATE_OBS"))
 print("OBSERVER:  ",get_key("OBSERVER"))
+print("TSYS:      ",get_key("TSYS"))
 
 # is this now topocentric?
-v1 = (1-f1/f1ref)*c
-v2 = (1-f2/f2ref)*c
 
-if do_yy:
-    xx1 = yy1
-    xx2 = yy2
+if do_band < 3:
+    v2 = (1-f1/f2ref)*c
+else:
+    v2 = (1-f2/f2ref)*c
+
+if do_band==1:
+    zz = xx1
+elif do_band==2:
+    zz = yy1
+elif do_band==3:
+    zz = xx2
+elif do_band==4:
+    zz = yy2
+else:
+    print("bad band",do_band)
+    sys.exit(1)
 
 if do_smooth > 0:
-    xx1 = my_smooth(xx1,do_smooth)
-    xx2 = my_smooth(xx2,do_smooth)
+    zz = my_smooth(zz,do_smooth)
 
 if p_order >= 0:
-    if band_1:
-        (p1,t1,r1) = fit_poly(v1,xx1,p_order,bl)
-    if band_2:
-        (p2,t2,r2) = fit_poly(v2,xx2,p_order,bl)
-
+    (p2,t2,r2) = fit_poly(v2,zz,p_order,bl)
 
 plt.figure()
-if normalize:
-    xx1 = (xx1-xx1.min())/(xx1.max()-xx1.min())
-    xx2 = (xx2-xx2.min())/(xx2.max()-xx2.min())
-    yy1 = (yy1-yy1.min())/(yy1.max()-yy1.min())
-    yy2 = (yy2-yy2.min())/(yy2.max()-yy2.min())
-    if band_1:
-        plt.plot(v1,xx1, label='XX %g ?' % f1ref)
-        plt.plot(v1,yy1, label='YY %g ?' % f1ref)
-    if band_2:
-        plt.plot(v2,xx2, label='XX %g' % f2ref)
-        plt.plot(v2,yy2, label='YY %g' % f2ref)
-    plt.ylabel('Normalized Power')
-else:
-    if band_1:
-        plt.plot(v1,xx1, label='%g ?' % f1ref)
-    if band_2:
-        plt.plot(v2,xx2, label='%g  %ss' % (f2ref, get_key("EXPOSURE")))
-        if p_order >= 0:
-            rms2 = r2.std()
-            rms3 = diff_rms(r2)
-            #plt.plot(t2, p2(t2), '-', label='POLY %d' % p_order)
-            plt.plot(v2, p2(v2), '-', label='POLY %d SMTH %d' % (p_order,do_smooth))
-            plt.plot(t2, r2, '-', label='RMS %.3g %.3g' % (rms2, rms3))
-            plt.plot([v2[0],v2[-1]], [0.0, 0.0], c='black', linewidth=2, label='baseline')
-    plt.ylabel('Power [Kelvin]')
+
+plt.plot(v2,zz, label='%g  %ss' % (f2ref, get_key("EXPOSURE")))
+if p_order >= 0:
+    rms2 = r2.std()
+    rms3 = diff_rms(r2)
+    #plt.plot(t2, p2(t2), '-', label='POLY %d' % p_order)
+    plt.plot(v2, p2(v2), '-', label='POLY %d SMTH %d' % (p_order,do_smooth))
+    plt.plot(t2, r2, '-', label='RMS %.3g %.3g' % (rms2, rms3))
+    plt.plot([v2[0],v2[-1]], [0.0, 0.0], c='black', linewidth=2, label='baseline')
+plt.ylabel('Power [Kelvin]')
 plt.xlabel('Doppler Velocity [km/s]')
 plt.title(tab)
 plt.legend()
