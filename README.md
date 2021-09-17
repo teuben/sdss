@@ -17,6 +17,11 @@ Although this will produce a cube, line and cont map, the
 determination of the continuum isn't always good and you may need to
 an additional baseline subtraction from either the cube or line.
 
+## The GBT 20m telescope
+
+Data were obtained with the 20m telescope, through the wonderful
+[Skynet](https://skynet.unc.edu/sites/view?id=15) interface.
+
 ## Files in this repository
 
 * archive/ - some sample archive data from M31
