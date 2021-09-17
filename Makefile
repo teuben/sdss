@@ -34,7 +34,7 @@ n4565:
 n4559:
 	$(P) group2/Skynet_59473_ngc4559_group2_62147_10970.A.onoff.cal.txt    3 0 8 -1000 -100 100 650 950 2500
 
-# some archive examples.  Note m31a1 is on the center, the rest is.
+# some archive examples.  Note m31a1 is not on the center, the rest is.
 m31a1:
 	$(P) archive/Skynet_58945_M31_10kpc_radius_44912_54515.A.onoff.cal.txt 3 0 8 -2100 -800 100 1000
 
