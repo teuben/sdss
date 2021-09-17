@@ -26,7 +26,7 @@ an additional baseline subtraction from either the cube or line.
 * group2/   - our data (M31, N628, N1530, N3976, N4565, N4559)
 * mom0.py - make a good moment-0 map (from group1)
 * plotsp1.py - analysis of noise with baseline subtraction, option to smooth and XX+YY average
-* presentation.pdf - our 10 minute final presentation
+* presentation2.pdf - our 10 minute final presentation
 * something.ipynb - python notebook with the (scaled?) averaging technique, options to smooth and bin
 
 ## Example how to review a dataset using plotsp1.py
