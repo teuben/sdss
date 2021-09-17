@@ -171,6 +171,10 @@ elif do_band==3:
     zz = xx2
 elif do_band==4:
     zz = yy2
+elif do_band==5:
+    zz = (xx1+yy1)/2
+elif do_band==6:
+    zz = (xx2+yy2)/2
 else:
     print("bad band",do_band)
     sys.exit(1)
@@ -190,7 +194,7 @@ if p_order >= 0:
     #plt.plot(t2, p2(t2), '-', label='POLY %d' % p_order)
     plt.plot(v2, p2(v2), '-', label='POLY %d SMTH %d' % (p_order,do_smooth))
     plt.plot(t2, r2, '-', label='RMS %.3g %.3g' % (rms2, rms3))
-    plt.plot([v2[0],v2[-1]], [0.0, 0.0], c='black', linewidth=2, label='baseline')
+    plt.plot([v2[0],v2[-1]], [0.0, 0.0], c='black', linewidth=2, label='baseline BAND %d' % do_band)
 plt.ylabel('Power [Kelvin]')
 plt.xlabel('Doppler Velocity [km/s]')
 plt.title(tab)
