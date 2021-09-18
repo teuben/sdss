@@ -71,5 +71,5 @@ convince yourself this is a pretty good detection.
 
 ![n628 20m spectrum](n628-20m.png)
 
-One comment on the Kelvin's in this data. During out session there was no calibration possible, but we know
-these scaled Kelvin's are fairly close to the real one.
+A warning on the Kelvin scale: during our session there was no calibration possible, but we know
+these scaled Kelvin's are fairly close to the real one since the peak is about 3 K in calibrated data.
