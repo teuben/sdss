@@ -1,6 +1,7 @@
 
 
 P = ./plotsp1.py
+G = gbtgridder/src/gbtgridder
 
 ALL = m31 n628 n1530 n3976 n4565 n4559
 ARCH = m31a1 m31a2
@@ -48,5 +49,20 @@ m31a4:
 	$(P) archive/Skynet_59202_M31_51605_573.A.onoff.cal.txt                      1 0 4 -2000 -650 100 1500
 
 
+gbtgridder:
+	git clone -b python3 https://github.com/teuben/gbtgridder
 
+#   what's the best convolution kernel?
+
+map10:
+	$(G) --dish 10 -o map10 --clobber group2/Skynet_59471_messier_31_62079_10919.cyb.fits
+
+map15:
+	$(G) --dish 15 -o map15 --clobber group2/Skynet_59471_messier_31_62079_10919.cyb.fits
+
+map20:
+	$(G) --dish 20 -o map20 --clobber group2/Skynet_59471_messier_31_62079_10919.cyb.fits
+
+map30:
+	$(G) --dish 30 -o map30 --clobber group2/Skynet_59471_messier_31_62079_10919.cyb.fits
 
