@@ -27,9 +27,12 @@ Data were obtained with the 20m telescope, through the wonderful
 * archive/ - some sample archive data from M31
 * cont_sub.py - manual continuum subtraction (from group1)
 * convert_lsrk.py -  convert a topocentric cube to VLSR (from group1)
+* Data/ - tables for the notebook 
 * GBO20m_SSDS_group2_Data.*  - spreadsheet with our data and derived quantaties
+* GBT_20-m_Project.ipynb - notebook, tables from the Data/ directory
 * group2/   - our data (M31, N628, N1530, N3976, N4565, N4559)
 * mom0.py - make a good moment-0 map (from group1)
+* n1530_spectrum_radio_bary.tab - comparison spectrum as obtained from GBT training
 * plotsp1.py - analysis of noise with baseline subtraction, option to smooth and XX+YY average
 * presentation2.pdf - our 10 minute final presentation
 * something.ipynb - python notebook with the (scaled?) averaging technique, options to smooth and bin
