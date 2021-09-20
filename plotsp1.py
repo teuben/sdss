@@ -143,6 +143,9 @@ def my_smooth(y, box_pts):
     y_smooth = np.convolve(y, box, mode='same')
     return y_smooth
 
+def add_spectrum(filename):
+    (v,t) = np.loadtxt(filename).T
+    plt.plot(v,t,label=filename)
 
 # --- useful constants --------------------------------------------------------------------
 
@@ -200,6 +203,9 @@ if p_order >= 0:
     plt.plot(v2, p2(v2), '-', label='POLY %d SMTH %d' % (p_order,do_smooth))
     plt.plot(t2, r2, '-', label='RMS %.3g %.3g' % (rms2, rms3))
     plt.plot([v2[0],v2[-1]], [0.0, 0.0], c='black', linewidth=2, label='baseline BAND %d' % do_band)
+#    
+# add_spectrum('n1530_spectrum_radio_bary.tab')
+#
 plt.ylabel('Power [Kelvin]')
 plt.xlabel('Doppler Velocity [km/s]')
 plt.title(tab)
